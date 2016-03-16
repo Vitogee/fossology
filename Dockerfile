@@ -7,6 +7,7 @@ EXPOSE 80
 RUN apt-get update
 RUN apt-get install -y curl \
   php5 \
+  php5-pgsql\
   apache2 \
   git \
   libspreadsheet-writeexcel-perl \

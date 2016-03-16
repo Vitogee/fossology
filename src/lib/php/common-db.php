@@ -35,7 +35,7 @@
  *
  * If $Options is empty, then connection parameters will be read from Db.conf.
  *
- * \return 
+ * \return
  *   Success: $PG_CONN, the postgres connection object
  *   Failure: Error message is printed
  **/
@@ -44,6 +44,15 @@ function DBconnect($sysconfdir, $options="", $exitOnFail=true)
   global $PG_CONN;
 
   if (!empty($PG_CONN)) return $PG_CONN;
+
+  $dbEnvHost = getenv('FOSSOLOGY_DATABASE_HOST');
+  $dbEnvPort = getenv('FOSSOLOGY_DATABASE_PORT') || '5432';
+  $dbEnvName = getenv('FOSSOLOGY_DATABASE_NAME') || 'fossology';
+  $dbEnvUser = getenv('FOSSOLOGY_DATABASE_USER') || 'fossy';
+  $dbEnvPassword = getenv('FOSSOLOGY_DATABASE_PASSWORD') || 'fossy';
+  if (empty($dbEnvHost)) {
+    $options = sprintf("host=%s port=%d dbname=% user=%s password=%s", $dbEnvHost, $dbEnvPort, $dbEnvName, $dbEnvUser, $dbEnvPassword);
+  }
 
   $path="$sysconfdir/Db.conf";
   if (empty($options))
@@ -94,8 +103,8 @@ function DBconnect($sysconfdir, $options="", $exitOnFail=true)
    \param $Where   SQL where clause e.g. "where uploadtree_pk=2".
                    Though a WHERE clause is the typical use, $Where
                    can really be any options following the sql tablename.
-   \return 
-       Associative array for this record.  
+   \return
+       Associative array for this record.
        May be empty if no record found.
  **/
 function GetSingleRec($Table, $Where="")
